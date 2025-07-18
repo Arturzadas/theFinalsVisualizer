@@ -1,6 +1,6 @@
 import { Input } from "@chakra-ui/react";
 
-export const FileInput = () => {
+export const FileInput = ({ setter }) => {
   const handleChange = (files) => {
     if (!files || !files?.length) return;
 
@@ -25,7 +25,21 @@ export const FileInput = () => {
           return el?.RoundStat;
         });
 
-      console.log(format);
+      console.log(
+        format
+          .map((el) => {
+            return {
+              scenario: el?.RoundStat?.Data?.ScenarioID,
+              tournament: el?.RoundStat?.Data?.TournamentID,
+            };
+          })
+          .filter((el) => {
+            // return el?.ScenarioID === "164312917" && el?.TournamentID !== "";
+            return el?.tournament !== "";
+          })
+      );
+
+      setter(format);
     };
   };
 
