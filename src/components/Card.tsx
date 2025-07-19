@@ -1,12 +1,11 @@
 import { Badge, Box, Button, HStack, Text, VStack } from "@chakra-ui/react";
-import Kyoto_day from "../assets/Kyoto_day.png";
 import {
   formatTimestamp,
   getMatchDuration,
   imageSwitcher,
 } from "../helpers/cardHelper";
 import { FaClock } from "react-icons/fa";
-import { useMediaQuery } from "@chakra-ui/react";
+import { Details } from "./Details";
 
 const WinCard = ({ isWin, isTournament }) => {
   return (
@@ -126,9 +125,7 @@ export const Card = ({ data, index }) => {
         </HStack>
         <HStack w={"100%"} justifyContent={"space-between"}>
           <PlayerClass archetype={data?.Data?.CharacterArchetype} />
-          <Button boxShadow={"md"} fontWeight={"bold"}>
-            See Details {"->"}
-          </Button>
+          <Details data={{ ...data?.Data, createdAt: data?.CreatedAt }} />
         </HStack>
       </VStack>
     </HStack>
