@@ -1,12 +1,88 @@
-import { HStack, Text, VStack } from "@chakra-ui/react";
+import { Badge, Box, Button, HStack, Text, VStack } from "@chakra-ui/react";
 import Kyoto_day from "../assets/Kyoto_day.png";
-import { formatTimestamp, imageSwitcher } from "../helpers/cardHelper";
+import {
+  formatTimestamp,
+  getMatchDuration,
+  imageSwitcher,
+} from "../helpers/cardHelper";
+import { FaClock } from "react-icons/fa";
+import { useMediaQuery } from "@chakra-ui/react";
 
-export const Card = ({ data }) => {
+const WinCard = ({ isWin, isTournament }) => {
+  return (
+    <HStack>
+      <Badge
+        fontSize={"2xl"}
+        fontWeight={"500"}
+        fontFamily={"Saira"}
+        py={2}
+        bgColor={isWin ? "#1CD322" : "#D31C44"}
+        boxShadow={"md"}
+      >
+        {isWin ? <>WIN</> : <>LOSS</>}
+      </Badge>
+      {isTournament && <Text>Tournament</Text>}
+    </HStack>
+  );
+};
+
+const PlayerClass = ({ archetype }) => {
+  let barNum = 1;
+  let barChar = "";
+
+  if (archetype === "DA_Archetype_Medium") {
+    barNum = 10;
+    barChar = "M";
+  }
+  if (archetype === "DA_Archetype_Heavy") {
+    barNum = 14;
+    barChar = "H";
+  }
+  if (archetype === "DA_Archetype_Small") {
+    barNum = 6;
+    barChar = "L";
+  }
+
+  return (
+    <HStack>
+      <HStack w={{ sm: "0px", md: "200px" }} gap={1}>
+        {Array(barNum)
+          .fill(0)
+          .map((_, i) => (
+            <Box
+              display={{ sm: "none", md: "block" }}
+              boxShadow={"md"}
+              key={i}
+              bgColor="white"
+              borderRadius="3px"
+              h="15px"
+              flex="1"
+            />
+          ))}
+      </HStack>
+      <Text fontWeight={"bold"}>{barChar}</Text>
+    </HStack>
+  );
+};
+
+export const Card = ({ data, index }) => {
   const mapInfo = imageSwitcher(data?.Data?.MapVariant);
 
   return (
-    <HStack w={"100%"} bgColor={"#3C3940"} borderRadius={"4px"}>
+    <HStack
+      onClick={() => console.log(data)}
+      w={"100%"}
+      gap={0}
+      bgColor={"#3C3940"}
+      borderRadius={"4px"}
+      fontWeight={"500"}
+      fontFamily={"Saira"}
+      transition={"ease 0.2s all"}
+      _hover={{
+        transform: "scale(1.02)",
+      }}
+      boxShadow={"md"}
+    >
       <VStack
         bgImage={`linear-gradient(to top, rgba(0, 0, 0, 1), transparent), url("${mapInfo?.map}")`}
         // bgAttachment="cover"
@@ -14,24 +90,46 @@ export const Card = ({ data }) => {
         h={"200px"}
         w={"33%"}
         maxW={"400px"}
-        minW={"200px"}
+        minW={"250px"}
         borderRadius={"4px 0 0 4px "}
         justifyContent={"flex-end"}
         alignItems={"flex-start"}
       >
+        {/* Image container */}
         <VStack p={4} alignItems={"flex-start"} gap={0}>
-          <Text
-            fontWeight={"500"}
-            fontStyle={"italic"}
-            fontFamily={"Saira"}
-            fontSize={"2xl"}
-          >
+          <Text fontStyle={"italic"} fontSize={"2xl"}>
             {mapInfo?.mapName?.toUpperCase()}
           </Text>
-          <Text fontWeight={"500"} fontStyle={"italic"} fontFamily={"Saira"}>
-            {formatTimestamp(data?.CreatedAt)}
-          </Text>
+          <Text fontStyle={"italic"}>{formatTimestamp(data?.CreatedAt)}</Text>
         </VStack>
+      </VStack>
+      {/* Image Container END */}
+      <VStack
+        className={"findme"}
+        h={"200px"}
+        w={"100%"}
+        alignItems={"flex-start"}
+        justifyContent={"space-between"}
+        p={4}
+      >
+        <HStack w={"100%"} justifyContent={"space-between"}>
+          <WinCard
+            isWin={data?.Data?.RoundWon}
+            isTournament={data?.Data?.TournamentID !== ""}
+          />
+          <HStack>
+            <FaClock />
+            <Text>
+              {getMatchDuration(data?.Data?.StartTime, data?.Data?.EndTime)}
+            </Text>
+          </HStack>
+        </HStack>
+        <HStack w={"100%"} justifyContent={"space-between"}>
+          <PlayerClass archetype={data?.Data?.CharacterArchetype} />
+          <Button boxShadow={"md"} fontWeight={"bold"}>
+            See Details {"->"}
+          </Button>
+        </HStack>
       </VStack>
     </HStack>
   );

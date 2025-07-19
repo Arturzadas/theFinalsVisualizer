@@ -104,3 +104,12 @@ export function formatTimestamp(isoString) {
 
   return `${getOrdinal(day)} ${month} ${year} @${hours}h${minutes}m`;
 }
+
+export function getMatchDuration(startTime, endTime) {
+  const durationMs = endTime - startTime;
+
+  const seconds = Math.floor((durationMs / 1000) % 60);
+  const minutes = Math.floor((durationMs / (1000 * 60)) % 60);
+
+  return `${minutes}m ${seconds}s`;
+}
