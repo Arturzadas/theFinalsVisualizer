@@ -14,33 +14,48 @@ export const FileInput = ({ setter }) => {
       const textArr = text?.split("\n");
 
       const format = textArr
-        .map((el) => {
+        .map((el, index) => {
           try {
             return JSON.parse(el);
-          } catch {
-            //do nothing
+          } catch (err) {
+            console.log(el, err, index);
           }
         })
         .filter((el) => {
           return el?.RoundStat;
         });
 
-      console.log(
-        format
-          .map((el) => {
-            return {
-              scenario: el?.RoundStat?.Data?.ScenarioID,
-              tournament: el?.RoundStat?.Data?.TournamentID,
-            };
-          })
-          .filter((el) => {
-            // return el?.ScenarioID === "164312917" && el?.TournamentID !== "";
-            return el?.tournament !== "";
-          })
-      );
+      //3 LTMs
+      //4 casuals
+      //2 tournaments
+      //practice range?
+
+      //!maps
+      // monaco
+      //seoul
+      //lasVegas
+      //bernal
+      //kyoto
+      //playground  - heavy hitters
+      //forest - PEACE Center
+
+      //fortune stadium arena_04
+      //* skyway_stadium arena_01
+      //sys horizon arena_02
+      //nozomi/citadel arena_04
 
       setter(format);
     };
+  };
+
+  const mapData = {
+    vegas: {
+      standard: ["sunny", "sunset", "heavy rain", "clear night"],
+      sandstorm: ["foggy day"],
+    },
+    nozomi: {
+      standard: ["sunny", "clear night"],
+    },
   };
 
   return (

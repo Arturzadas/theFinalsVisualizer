@@ -1,53 +1,38 @@
-import { HStack, Image, VStack } from "@chakra-ui/react";
+import { HStack, Text, VStack } from "@chakra-ui/react";
 import Kyoto_day from "../assets/Kyoto_day.png";
+import { formatTimestamp, imageSwitcher } from "../helpers/cardHelper";
 
 export const Card = ({ data }) => {
-  const example = {
-    RoundStat: {
-      CreatedAt: "2025-05-04T19:49:52.018708Z",
-      Data: {
-        Kills: 14,
-        KillsPerItem: { "473278792": 11 },
-        Deaths: 13,
-        Dbnos: 0,
-        Respawns: 13,
-        DamageDone: 4446.2427,
-        RevivesDone: 0,
-        RespawnsDone: 0,
-        SquadID: 1,
-        SquadName: "The Kingfish",
-        TournamentID: "",
-        MatchID: "",
-        Tier: 0,
-        StartTime: 1746387306676,
-        EndTime: 1746388191452,
-        CharacterArchetype: "DA_Archetype_Medium",
-        RoundWon: true,
-        TournamentWon: false,
-        Currency: 20000,
-        MapVariant: "DA_MV_Forest_01_Base_01",
-        EnvironmentalCondition: "DA_EC_TDM_Forest_01_Day",
-        Disconnected: false,
-        FameAmount: 0,
-        ScenarioID: "704866484",
-        LeaderboardPosition: 1,
-        IsBackfill: false,
-      },
-    },
-  };
+  const mapInfo = imageSwitcher(data?.Data?.MapVariant);
 
   return (
-    <HStack w={"100%"} bgColor={"#3C3940"} borderRadius={"sm"}>
+    <HStack w={"100%"} bgColor={"#3C3940"} borderRadius={"4px"}>
       <VStack
-        bgImage={`url("${Kyoto_day}")`}
+        bgImage={`linear-gradient(to top, rgba(0, 0, 0, 1), transparent), url("${mapInfo?.map}")`}
         // bgAttachment="cover"
         bgSize={"cover"}
         h={"200px"}
         w={"33%"}
         maxW={"400px"}
         minW={"200px"}
-      ></VStack>
-      Cenas aqui
+        borderRadius={"4px 0 0 4px "}
+        justifyContent={"flex-end"}
+        alignItems={"flex-start"}
+      >
+        <VStack p={4} alignItems={"flex-start"} gap={0}>
+          <Text
+            fontWeight={"500"}
+            fontStyle={"italic"}
+            fontFamily={"Saira"}
+            fontSize={"2xl"}
+          >
+            {mapInfo?.mapName?.toUpperCase()}
+          </Text>
+          <Text fontWeight={"500"} fontStyle={"italic"} fontFamily={"Saira"}>
+            {formatTimestamp(data?.CreatedAt)}
+          </Text>
+        </VStack>
+      </VStack>
     </HStack>
   );
 };
