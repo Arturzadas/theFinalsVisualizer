@@ -8,6 +8,20 @@ import monaco from "../assets/Monaco_Default_Afternoon.jpg";
 import seoul from "../assets/Seoul_Default_Afternoon.jpg";
 import heavyHitters from "../assets/TestRange_Default.jpg";
 import nozomi from "../assets/1920px-NOZOMI_Placeholder.png";
+import boundless from "../assets/Frame 7.svg";
+import ultraRares from "../assets/Frame 22.svg";
+import toughShells from "../assets/Frame 21.svg";
+import retros from "../assets/Frame 16.svg";
+import kingfish from "../assets/Frame 5.svg";
+import powerhouses from "../assets/Frame 5.svg";
+import highNotes from "../assets/Frame 8.svg";
+import socialites from "../assets/Frame 10.svg";
+import liveWires from "../assets/Frame 11.svg";
+import mighty from "../assets/Frame 12.svg";
+import overdogs from "../assets/Frame 13.svg";
+import jetSetters from "../assets/Frame 17.svg";
+import steamrollers from "../assets/Frame 23.svg";
+import finals from "../assets/Frame 25.svg";
 
 export const imageSwitcher = (mapStr) => {
   //!maps
@@ -113,3 +127,53 @@ export function getMatchDuration(startTime, endTime) {
 
   return `${minutes}m ${seconds}s`;
 }
+
+export const teamSelect = (teamStr) => {
+  let img;
+
+  switch (teamStr) {
+    case "The Boundless":
+      img = boundless;
+      break;
+    case "The Ultra Rares":
+      img = ultraRares;
+      break;
+    case "The Tough Shells":
+      img = toughShells;
+      break;
+    case "The Retros":
+      img = retros;
+      break;
+    case "The Kingfish":
+      img = kingfish;
+      break;
+    case "The Powerhouses":
+      img = powerhouses;
+      break;
+    case "The High Notes":
+      img = highNotes;
+      break;
+    case "The Socialites":
+      img = socialites;
+      break;
+    case "The Live Wires":
+      img = liveWires;
+      break;
+    case "The Mighty":
+      img = mighty;
+      break;
+    case "The Overdogs":
+      img = overdogs;
+      break;
+    case "The Jet Setters":
+      img = jetSetters;
+      break;
+    case "The Steamrollers":
+      img = steamrollers;
+      break;
+    default:
+      img = finals; // or some fallback image
+      break;
+  }
+  return img;
+};

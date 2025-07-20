@@ -6,63 +6,8 @@ import {
 } from "../helpers/cardHelper";
 import { FaClock } from "react-icons/fa";
 import { Details } from "./Details";
-
-const WinCard = ({ isWin, isTournament }) => {
-  return (
-    <HStack>
-      <Badge
-        fontSize={"2xl"}
-        fontWeight={"500"}
-        fontFamily={"Saira"}
-        py={2}
-        bgColor={isWin ? "#1CD322" : "#D31C44"}
-        boxShadow={"md"}
-      >
-        {isWin ? <>WIN</> : <>LOSS</>}
-      </Badge>
-      {isTournament && <Text>Tournament</Text>}
-    </HStack>
-  );
-};
-
-const PlayerClass = ({ archetype }) => {
-  let barNum = 1;
-  let barChar = "";
-
-  if (archetype === "DA_Archetype_Medium") {
-    barNum = 10;
-    barChar = "M";
-  }
-  if (archetype === "DA_Archetype_Heavy") {
-    barNum = 14;
-    barChar = "H";
-  }
-  if (archetype === "DA_Archetype_Small") {
-    barNum = 6;
-    barChar = "L";
-  }
-
-  return (
-    <HStack>
-      <HStack w={{ sm: "0px", md: "200px" }} gap={1}>
-        {Array(barNum)
-          .fill(0)
-          .map((_, i) => (
-            <Box
-              display={{ sm: "none", md: "block" }}
-              boxShadow={"md"}
-              key={i}
-              bgColor="white"
-              borderRadius="3px"
-              h="15px"
-              flex="1"
-            />
-          ))}
-      </HStack>
-      <Text fontWeight={"bold"}>{barChar}</Text>
-    </HStack>
-  );
-};
+import { WinCard } from "./WinCard";
+import { PlayerClass } from "./PlayerClass";
 
 export const Card = ({ data, index }) => {
   const mapInfo = imageSwitcher(data?.Data?.MapVariant);

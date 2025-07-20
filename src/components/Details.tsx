@@ -9,7 +9,15 @@ import {
   Center,
   Box,
 } from "@chakra-ui/react";
-import { formatTimestamp, imageSwitcher } from "../helpers/cardHelper";
+import {
+  formatTimestamp,
+  getMatchDuration,
+  imageSwitcher,
+  teamSelect,
+} from "../helpers/cardHelper";
+import { WinCard } from "./WinCard";
+import { FaClock } from "react-icons/fa";
+import { PlayerClass } from "./PlayerClass";
 
 const RadialKD = ({ kills = 0, deaths = 0 }) => {
   const ratio = deaths === 0 ? kills : kills / deaths;
@@ -23,7 +31,7 @@ const RadialKD = ({ kills = 0, deaths = 0 }) => {
   const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
   return (
-    <Center p={2}>
+    <Center p={0}>
       <Box position="relative" w="100px" h="100px">
         <svg height="100" width="100">
           <circle
@@ -100,28 +108,63 @@ export const Details = ({ data }) => {
                 alignItems={"flex-start"}
                 boxShadow={"md"}
               >
-                <VStack p={4} alignItems={"flex-start"} gap={0}>
-                  <Text fontStyle={"italic"} fontSize={"2xl"}>
-                    {mapDetails?.mapName?.toUpperCase()}
-                  </Text>
-                  <Text fontStyle={"italic"}>
-                    {formatTimestamp(data?.createdAt)}
-                  </Text>
+                <VStack
+                  p={4}
+                  h={"100%"}
+                  justifyContent={"space-between"}
+                  gap={0}
+                  alignItems={"flex-start"}
+                >
+                  <PlayerClass archetype={data?.CharacterArchetype} />
+                  <VStack
+                    alignItems={"flex-start"}
+                    gap={0}
+                    justifyContent={"flex-end"}
+                  >
+                    <Text fontStyle={"italic"} fontSize={"2xl"}>
+                      {mapDetails?.mapName?.toUpperCase()}
+                    </Text>
+                    <Text fontStyle={"italic"}>
+                      {formatTimestamp(data?.createdAt)}
+                    </Text>
+                  </VStack>
                 </VStack>
               </VStack>
             </Dialog.Header>
-            <Dialog.Body>
-              <HStack>
+            <Dialog.Body pt={0}>
+              <HStack p={0}>
                 <VStack>
+                  <HStack>
+                    <Box
+                      h={"50px"}
+                      w={"70px"}
+                      bgImage={`url("${teamSelect(data?.SquadName)}")`}
+                      bgSize={"cover"}
+                    ></Box>
+                    <Text {...text}>{data?.SquadName}</Text>
+                  </HStack>
                   <RadialKD kills={data?.Kills} deaths={data?.Deaths} />
                 </VStack>
-                <VStack gap={0}>
+                <VStack gap={0} alignItems={"flex-start"}>
+                  <WinCard
+                    isWin={data?.RoundWon}
+                    isTournament={!!data?.TournamentID}
+                  />
+                  {/* Divider */}
+                  <Box p={1}></Box>
+                  {/* Divider */}
                   <Text {...text}>Kills: {data?.Kills}</Text>
                   <Text {...text}>Deaths: {data?.Deaths}</Text>
                   <Text {...text}>Respawns: {data?.Respawns}</Text>
                   <Text {...text}>Revives: {data?.RevivesDone}</Text>
                   <Text {...text}>Damage: {data?.DamageDone}</Text>
                 </VStack>
+                <HStack position={"absolute"} right={"5"} bottom={"5"}>
+                  <FaClock />
+                  <Text>
+                    {getMatchDuration(data?.StartTime, data?.EndTime)}
+                  </Text>
+                </HStack>
               </HStack>
             </Dialog.Body>
           </Dialog.Content>
