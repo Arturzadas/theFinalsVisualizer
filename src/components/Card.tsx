@@ -15,62 +15,71 @@ export const Card = ({ data, index }) => {
   return (
     <HStack
       onClick={() => console.log(data)}
-      w={"100%"}
+      w="100%"
       gap={0}
-      bgColor={"#3C3940"}
-      borderRadius={"4px"}
-      fontWeight={"500"}
-      fontFamily={"Saira"}
-      transition={"ease 0.2s all"}
-      _hover={{
-        transform: "scale(1.02)",
-      }}
-      boxShadow={"md"}
+      bgColor="#3C3940"
+      borderRadius="4px"
+      fontWeight="500"
+      fontFamily="Saira"
+      transition="ease 0.2s all"
+      _hover={{ transform: "scale(1.02)" }}
+      boxShadow="md"
+      flexDirection={{ base: "column", md: "row" }}
+      alignItems="stretch"
     >
+      {/* Image Section */}
       <VStack
         bgImage={`linear-gradient(to top, rgba(0, 0, 0, 1), transparent), url("${mapInfo?.map}")`}
-        // bgAttachment="cover"
-        bgSize={"cover"}
-        h={"200px"}
-        w={"33%"}
-        maxW={"400px"}
-        minW={"250px"}
-        borderRadius={"4px 0 0 4px "}
-        justifyContent={"flex-end"}
-        alignItems={"flex-start"}
+        bgSize="cover"
+        h={{ base: "180px", md: "200px" }}
+        w={{ base: "100%", md: "33%" }}
+        maxW={{ base: "100%", md: "400px" }}
+        minW={{ base: "100%", md: "250px" }}
+        borderRadius={{ base: "4px 4px 0 0", md: "4px 0 0 4px" }}
+        justifyContent="flex-end"
+        alignItems="flex-start"
+        overflow="hidden"
       >
-        {/* Image container */}
-        <VStack p={4} alignItems={"flex-start"} gap={0}>
-          <Text fontStyle={"italic"} fontSize={"2xl"}>
+        <VStack
+          p={4}
+          alignItems="flex-start"
+          gap={0}
+          display={{ base: "none", md: "flex" }}
+        >
+          <Text fontStyle="italic" fontSize="2xl">
             {mapInfo?.mapName?.toUpperCase()}
           </Text>
-          <Text fontStyle={"italic"}>{formatTimestamp(data?.CreatedAt)}</Text>
+          <Text fontStyle="italic">{formatTimestamp(data?.CreatedAt)}</Text>
         </VStack>
       </VStack>
-      {/* Image Container END */}
+
+      {/* Details Section */}
       <VStack
-        className={"findme"}
-        h={"200px"}
-        w={"100%"}
-        alignItems={"flex-start"}
-        justifyContent={"space-between"}
-        p={4}
+        h={{ base: "auto", md: "200px" }}
+        w="100%"
+        alignItems="flex-start"
+        justifyContent="space-between"
+        p={{ base: 2, md: 4 }}
+        gap={{ base: 2, md: 0 }}
       >
-        <HStack w={"100%"} justifyContent={"space-between"}>
+        <HStack w="100%" justifyContent="space-between" flexWrap="wrap">
           <WinCard
             isWin={data?.Data?.RoundWon}
             isTournament={data?.Data?.TournamentID !== ""}
           />
-          <HStack>
+          <HStack fontSize={{ base: "sm", md: "md" }}>
             <FaClock />
             <Text>
               {getMatchDuration(data?.Data?.StartTime, data?.Data?.EndTime)}
             </Text>
           </HStack>
         </HStack>
-        <HStack w={"100%"} justifyContent={"space-between"}>
+
+        <HStack w="100%" justifyContent="space-between" flexWrap="wrap">
           <PlayerClass archetype={data?.Data?.CharacterArchetype} />
-          <Details data={{ ...data?.Data, createdAt: data?.CreatedAt }} />
+          <Box>
+            <Details data={{ ...data?.Data, createdAt: data?.CreatedAt }} />
+          </Box>
         </HStack>
       </VStack>
     </HStack>

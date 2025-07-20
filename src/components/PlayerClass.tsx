@@ -19,6 +19,15 @@ export const PlayerClass = ({ archetype }) => {
 
   return (
     <HStack>
+      <Text
+        fontWeight={"bold"}
+        p={1}
+        px={3}
+        borderRadius={"sm"}
+        bgColor={"#3C394098"}
+      >
+        {barChar}
+      </Text>
       <HStack w={{ sm: "0px", md: "200px" }} gap={1}>
         {Array(barNum)
           .fill(0)
@@ -34,15 +43,6 @@ export const PlayerClass = ({ archetype }) => {
             />
           ))}
       </HStack>
-      <Text
-        fontWeight={"bold"}
-        p={1}
-        px={3}
-        borderRadius={"sm"}
-        bgColor={"#3C394098"}
-      >
-        {barChar}
-      </Text>
     </HStack>
   );
 };
