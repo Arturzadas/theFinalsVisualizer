@@ -23,7 +23,7 @@ const RadialKD = ({ kills = 0, deaths = 0 }) => {
   const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
   return (
-    <Center p={4}>
+    <Center p={2}>
       <Box position="relative" w="100px" h="100px">
         <svg height="100" width="100">
           <circle
@@ -67,6 +67,12 @@ const RadialKD = ({ kills = 0, deaths = 0 }) => {
 export const Details = ({ data }) => {
   const mapDetails = imageSwitcher(data?.MapVariant);
 
+  const text = {
+    textAlign: "left",
+    w: "full",
+    m: 0,
+  };
+
   return (
     <Dialog.Root placement={"center"}>
       <Dialog.Trigger asChild>
@@ -105,9 +111,18 @@ export const Details = ({ data }) => {
               </VStack>
             </Dialog.Header>
             <Dialog.Body>
-              <RadialKD kills={data?.Kills} deaths={data?.Deaths} />
-              <Text>Kills: {data?.Kills}</Text>
-              <Text>Deaths: {data?.Deaths}</Text>
+              <HStack>
+                <VStack>
+                  <RadialKD kills={data?.Kills} deaths={data?.Deaths} />
+                </VStack>
+                <VStack gap={0}>
+                  <Text {...text}>Kills: {data?.Kills}</Text>
+                  <Text {...text}>Deaths: {data?.Deaths}</Text>
+                  <Text {...text}>Respawns: {data?.Respawns}</Text>
+                  <Text {...text}>Revives: {data?.RevivesDone}</Text>
+                  <Text {...text}>Damage: {data?.DamageDone}</Text>
+                </VStack>
+              </HStack>
             </Dialog.Body>
           </Dialog.Content>
         </Dialog.Positioner>
