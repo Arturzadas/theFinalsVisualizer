@@ -157,7 +157,7 @@ export const Details = ({ data }) => {
                   <Text {...text}>Deaths: {data?.Deaths}</Text>
                   <Text {...text}>Respawns: {data?.Respawns}</Text>
                   <Text {...text}>Revives: {data?.RevivesDone}</Text>
-                  <Text {...text}>Damage: {data?.DamageDone}</Text>
+                  <Text {...text}>Damage: {Math.round(data?.DamageDone)}</Text>
                 </VStack>
                 <HStack position={"absolute"} right={"5"} bottom={"5"}>
                   <FaClock />
