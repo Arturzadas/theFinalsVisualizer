@@ -93,7 +93,7 @@ export const Stats = ({ data }) => {
       fontWeight="500"
       fontFamily="Saira"
       transition="ease 0.2s all"
-      _hover={{ transform: "scale(1.02)" }}
+      // _hover={{ transform: "scale(1.02)" }}
       boxShadow="md"
       p={4}
       border={"1px solid #989898ff"}
