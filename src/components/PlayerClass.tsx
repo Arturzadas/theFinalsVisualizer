@@ -25,6 +25,7 @@ export const PlayerClass = ({ archetype }) => {
         px={3}
         borderRadius={"sm"}
         bgColor={"#3C394098"}
+        boxShadow={"md"}
       >
         {barChar}
       </Text>

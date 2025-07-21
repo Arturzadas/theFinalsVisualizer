@@ -2,8 +2,9 @@ import { useRef, useState, useEffect } from "react";
 import { Box, Button, Text, VStack } from "@chakra-ui/react";
 import { TiUpload } from "react-icons/ti";
 import { testData } from "../assets/testData.ts";
+import { testStats } from "../assets/testStats.ts";
 
-export const FileInput = ({ setter }) => {
+export const FileInput = ({ setter, setStatsData }) => {
   const inputRef: any = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -18,17 +19,18 @@ export const FileInput = ({ setter }) => {
       if (!text || typeof text !== "string") return;
       const textArr = text.split("\n");
 
-      const format = textArr
-        .map((el, index) => {
-          try {
-            return JSON.parse(el);
-          } catch (err) {
-            console.log(el, err, index);
-          }
-        })
-        .filter((el) => el?.RoundStat);
+      const format = textArr.map((el, index) => {
+        try {
+          return JSON.parse(el);
+        } catch (err) {
+          console.log(el, err, index);
+        }
+      });
+      const matches = format.filter((el) => el?.RoundStat);
+      const stats = format.find((el) => el?.RoundStatSummary);
 
-      setter(format);
+      setter(matches);
+      setStatsData(stats);
     };
   };
 
@@ -79,7 +81,7 @@ export const FileInput = ({ setter }) => {
     e.stopPropagation();
     // Example data for preview/demo purposes
     setter(testData);
-    console.log(testData);
+    setStatsData(testStats);
   };
 
   return (

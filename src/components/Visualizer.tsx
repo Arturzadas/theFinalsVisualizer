@@ -2,8 +2,9 @@ import { Flex, HStack, VStack } from "@chakra-ui/react";
 import { useState } from "react";
 import { Card } from "./Card";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
+import { Stats } from "./Stats";
 
-export const Visualizer = ({ data }) => {
+export const Visualizer = ({ data, stats }) => {
   const itemsPerPage = 10;
   const totalPages = Math.ceil((data?.length || 0) / itemsPerPage);
   const [currPage, setCurrPage] = useState(1);
@@ -51,6 +52,7 @@ export const Visualizer = ({ data }) => {
 
   return (
     <VStack gap={5} px={10} py={10} w={"100vw"} maxW={"1920px"}>
+      <Stats data={stats} />
       {matchData?.length > 0 &&
         matchData?.map((el, index) => {
           return (
