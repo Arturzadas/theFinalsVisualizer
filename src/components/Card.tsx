@@ -10,7 +10,6 @@ import { WinCard } from "./WinCard";
 import { PlayerClass } from "./PlayerClass";
 
 export const Card = ({ data, index }) => {
-  // Extract match data depending on the format
   const normalizedData = data?.matches?.[0]?.RoundStat
     ? {
         ...data.matches[0].RoundStat,
@@ -33,6 +32,7 @@ export const Card = ({ data, index }) => {
       boxShadow="md"
       flexDirection={{ base: "column", md: "row" }}
       alignItems="stretch"
+      border={"1px solid #4d4d4dff"}
     >
       {/* Image Section */}
       <VStack
@@ -47,16 +47,11 @@ export const Card = ({ data, index }) => {
         alignItems="flex-start"
         overflow="hidden"
       >
-        <VStack
-          p={4}
-          alignItems="flex-start"
-          gap={0}
-          display={{ base: "none", md: "flex" }}
-        >
-          <Text fontStyle="italic" fontSize="2xl">
+        <VStack p={4} alignItems="flex-start" gap={0} w="100%">
+          <Text fontStyle="italic" fontSize={{ base: "lg", md: "2xl" }}>
             {mapInfo?.mapName?.toUpperCase()}
           </Text>
-          <Text fontStyle="italic">
+          <Text fontStyle="italic" fontSize={{ base: "sm", md: "md" }}>
             {formatTimestamp(normalizedData?.CreatedAt)}
           </Text>
         </VStack>

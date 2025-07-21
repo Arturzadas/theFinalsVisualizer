@@ -8,6 +8,70 @@ export const FileInput = ({ setter, setStatsData }) => {
   const inputRef: any = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
 
+  // ✅ Only groups and sorts already-parsed objects
+  const processStructuredData = (parsedArray) => {
+    const matches = parsedArray.filter((el) => el?.RoundStat);
+    const stats = parsedArray.find((el) => el?.RoundStatSummary);
+
+    const tournamentMap = new Map();
+    const noTournamentIDMatches: any = [];
+
+    function parseDate(createdAtStr) {
+      if (typeof createdAtStr !== "string") return null;
+      const normalized = createdAtStr.replace(/\.(\d{3})\d*Z$/, ".$1Z");
+      const date = new Date(normalized);
+      return isNaN(date.getTime()) ? null : date;
+    }
+
+    for (const match of matches) {
+      const tournamentID = match?.RoundStat?.Data?.TournamentID;
+      const createdAtRaw = match?.RoundStat?.CreatedAt;
+      const createdAt = parseDate(createdAtRaw);
+
+      if (!createdAt) continue;
+
+      if (tournamentID && tournamentID.trim() !== "") {
+        if (!tournamentMap.has(tournamentID)) {
+          tournamentMap.set(tournamentID, {
+            tournamentID,
+            matches: [],
+            earliestCreatedAt: createdAt,
+          });
+        }
+        const group = tournamentMap.get(tournamentID);
+        group.matches.push(match);
+        if (createdAt < group.earliestCreatedAt) {
+          group.earliestCreatedAt = createdAt;
+        }
+      } else {
+        noTournamentIDMatches.push({ ...match, createdAt });
+      }
+    }
+
+    const formattedGroupTournaments = Array.from(tournamentMap.values()).map(
+      (group) => ({
+        tournamentID: group.tournamentID,
+        matches: group.matches,
+        earliestCreatedAt: group.earliestCreatedAt.toISOString(),
+      })
+    );
+
+    const combined = [
+      ...formattedGroupTournaments,
+      ...noTournamentIDMatches,
+    ].sort((a: any, b: any) => {
+      const dateA = a.earliestCreatedAt
+        ? new Date(a.earliestCreatedAt)
+        : a.createdAt;
+      const dateB = b.earliestCreatedAt
+        ? new Date(b.earliestCreatedAt)
+        : b.createdAt;
+      return dateB - dateA;
+    });
+
+    return { combined, stats };
+  };
+
   const handleFiles = (files) => {
     if (!files || !files.length) return;
 
@@ -17,82 +81,18 @@ export const FileInput = ({ setter, setStatsData }) => {
     reader.onload = (e) => {
       const text = e?.target?.result;
       if (!text || typeof text !== "string") return;
+
       const textArr = text.split("\n");
-
-      const format = textArr.map((el, index) => {
+      const parsed = textArr.map((line, index) => {
         try {
-          return JSON.parse(el);
+          return JSON.parse(line);
         } catch (err) {
-          console.log(el, err, index);
+          console.warn("Line parse failed:", line, err);
         }
       });
 
-      const matches = format.filter((el) => el?.RoundStat);
-      const stats = format.find((el) => el?.RoundStatSummary);
-
-      const tournamentMap = new Map();
-      const noTournamentIDMatches: any = [];
-
-      function parseDate(createdAtStr) {
-        if (typeof createdAtStr !== "string") return null;
-        const normalized = createdAtStr.replace(/\.(\d{3})\d*Z$/, ".$1Z");
-        const date = new Date(normalized);
-        return isNaN(date.getTime()) ? null : date;
-      }
-
-      for (const match of matches) {
-        const tournamentID = match?.RoundStat?.Data?.TournamentID;
-        const createdAtRaw = match?.RoundStat?.CreatedAt;
-        const createdAt = parseDate(createdAtRaw);
-
-        if (!createdAt) {
-          // Skip matches with invalid createdAt date
-          continue;
-        }
-
-        if (tournamentID && tournamentID.trim() !== "") {
-          // Group matches with valid tournamentID
-          if (!tournamentMap.has(tournamentID)) {
-            tournamentMap.set(tournamentID, {
-              tournamentID,
-              matches: [],
-              earliestCreatedAt: createdAt,
-            });
-          }
-          const group = tournamentMap.get(tournamentID);
-          group.matches.push(match);
-          if (createdAt < group.earliestCreatedAt) {
-            group.earliestCreatedAt = createdAt;
-          }
-        } else {
-          // Collect matches without a tournamentID separately
-          noTournamentIDMatches.push({ ...match, createdAt });
-        }
-      }
-
-      // Format grouped tournaments
-      const formattedGroupTournaments = Array.from(tournamentMap.values()).map(
-        (group) => ({
-          tournamentID: group.tournamentID,
-          matches: group.matches,
-          earliestCreatedAt: group.earliestCreatedAt.toISOString(),
-        })
-      );
-
-      // Now combine grouped tournaments + matches without tournamentID
-      // For sorting, use earliestCreatedAt for groups, createdAt for individual matches
-      const combined = [
-        ...formattedGroupTournaments,
-        ...noTournamentIDMatches,
-      ].sort((a: any, b: any) => {
-        const dateA = a.earliestCreatedAt
-          ? new Date(a.earliestCreatedAt)
-          : a.createdAt;
-        const dateB = b.earliestCreatedAt
-          ? new Date(b.earliestCreatedAt)
-          : b.createdAt;
-        return dateB - dateA; // most recent first
-      });
+      const cleaned = parsed.filter(Boolean);
+      const { combined, stats } = processStructuredData(cleaned);
 
       setter(combined);
       setStatsData(stats);
@@ -117,14 +117,12 @@ export const FileInput = ({ setter, setStatsData }) => {
   };
 
   const handleClick = (e) => {
-    // Prevent opening file dialog on interactive elements
     if (
       e.target.closest("button") ||
       e.target.closest("a") ||
       e.target.closest("input")
     )
       return;
-
     inputRef.current?.click();
   };
 
@@ -144,8 +142,9 @@ export const FileInput = ({ setter, setStatsData }) => {
 
   const handleUseExample = (e) => {
     e.stopPropagation();
-    // Example data for preview/demo purposes
-    setter(testData);
+    // ✅ testData is already parsed, just group and format
+    const { combined } = processStructuredData(testData);
+    setter(combined);
     setStatsData(testStats);
   };
 
@@ -171,16 +170,14 @@ export const FileInput = ({ setter, setStatsData }) => {
         onChange={(e) => handleFiles(e.target.files)}
       />
       <VStack
-        w={"100%"}
-        h={"100%"}
-        border={"1px solid gray"}
-        alignItems={"center"}
-        justifyContent={"center"}
-        borderRadius={"2xl"}
-        transition={"ease 0.2s all"}
-        _hover={{
-          transform: "scale(1.01)",
-        }}
+        w="100%"
+        h="100%"
+        border="1px solid gray"
+        alignItems="center"
+        justifyContent="center"
+        borderRadius="2xl"
+        transition="ease 0.2s all"
+        _hover={{ transform: "scale(1.01)" }}
       >
         <TiUpload size={100} fill={"gray"} />
         <Text fontSize="xl" color="gray">

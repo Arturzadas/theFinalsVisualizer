@@ -23,8 +23,32 @@ import { PlayerClass } from "./PlayerClass";
 import { RadialKD } from "./RadialKD";
 import { BsArrowRight } from "react-icons/bs";
 
-export const Details = ({ data }) => {
-  const mapDetails = imageSwitcher(data?.MapVariant);
+export const TournamentDetails = ({ data }) => {
+  const isMobile = useBreakpointValue({ base: true, md: false });
+
+  const matches = data?.matches || [];
+  const squadName = matches?.[0]?.RoundStat?.Data?.SquadName;
+  const createdAt = data?.earliestCreatedAt;
+  const teamIcon = teamSelect(squadName);
+
+  const allRoundsWon = matches.every(
+    (m) => m?.RoundStat?.Data?.RoundWon === true
+  );
+
+  // Aggregate stats
+  const aggregated = matches.reduce(
+    (acc, m) => {
+      const d = m.RoundStat.Data;
+      acc.kills += d.Kills || 0;
+      acc.deaths += d.Deaths || 0;
+      acc.respawns += d.Respawns || 0;
+      acc.revives += d.RevivesDone || 0;
+      acc.damage += d.DamageDone || 0;
+      acc.duration += (d.EndTime || 0) - (d.StartTime || 0);
+      return acc;
+    },
+    { kills: 0, deaths: 0, respawns: 0, revives: 0, damage: 0, duration: 0 }
+  );
 
   const text = {
     textAlign: "left",
@@ -32,13 +56,14 @@ export const Details = ({ data }) => {
     m: 0,
   };
 
-  const isMobile = useBreakpointValue({ base: true, md: false });
+  // Use first match for map thumbnail
+  const mapDetails = imageSwitcher(matches?.[0]?.RoundStat?.Data?.MapVariant);
 
   return (
     <Dialog.Root placement={"center"}>
       <Dialog.Trigger asChild>
         <Button boxShadow={"md"} fontWeight={"bold"}>
-          Match Details
+          Tournament Details
           <BsArrowRight />
         </Button>
       </Dialog.Trigger>
@@ -82,17 +107,21 @@ export const Details = ({ data }) => {
                   gap={0}
                   alignItems={"flex-start"}
                 >
-                  <PlayerClass archetype={data?.CharacterArchetype} />
-                  <VStack
-                    alignItems={"flex-start"}
-                    gap={0}
-                    justifyContent={"flex-end"}
-                  >
-                    <Text fontStyle={"italic"} fontSize={"2xl"}>
-                      {mapDetails?.mapName?.toUpperCase()}
+                  <PlayerClass
+                    archetype={
+                      data?.matches[0]?.RoundStat?.Data?.CharacterArchetype
+                    }
+                  />
+                  <VStack alignItems={"flex-start"} gap={0}>
+                    <Text
+                      fontStyle={"italic"}
+                      fontSize={"2xl"}
+                      textTransform={"uppercase"}
+                    >
+                      {mapDetails?.mapName}
                     </Text>
                     <Text fontStyle={"italic"}>
-                      {formatTimestamp(data?.createdAt)}
+                      {formatTimestamp(createdAt)}
                     </Text>
                   </VStack>
                 </VStack>
@@ -105,32 +134,30 @@ export const Details = ({ data }) => {
                 align="start"
                 position="relative"
               >
-                <VStack alignItems={"flex-start"} w="50%">
+                <VStack alignItems={"flex-start"} w="100%">
                   <HStack>
                     <Box
                       h={"50px"}
                       w={"70px"}
-                      bgImage={`url("${teamSelect(data?.SquadName)}")`}
+                      bgImage={`url("${teamIcon}")`}
                       bgSize={"cover"}
                     />
-                    <Text {...text}>{data?.SquadName}</Text>
+                    <Text {...text}>{squadName}</Text>
                   </HStack>
-                  <RadialKD kills={data?.Kills} deaths={data?.Deaths} />
+                  <RadialKD
+                    kills={aggregated.kills}
+                    deaths={aggregated.deaths}
+                  />
                 </VStack>
 
                 <VStack gap={0} alignItems={"flex-start"} w="100%">
-                  <Box pt={4}>
-                    <WinCard
-                      isWin={data?.RoundWon}
-                      isTournament={!!data?.TournamentID}
-                    />
-                  </Box>
+                  <WinCard isWin={allRoundsWon} isTournament={true} />
                   <Box p={1}></Box>
-                  <Text {...text}>Kills: {data?.Kills}</Text>
-                  <Text {...text}>Deaths: {data?.Deaths}</Text>
-                  <Text {...text}>Respawns: {data?.Respawns}</Text>
-                  <Text {...text}>Revives: {data?.RevivesDone}</Text>
-                  <Text {...text}>Damage: {Math.round(data?.DamageDone)}</Text>
+                  <Text {...text}>Kills: {aggregated.kills}</Text>
+                  <Text {...text}>Deaths: {aggregated.deaths}</Text>
+                  <Text {...text}>Respawns: {aggregated.respawns}</Text>
+                  <Text {...text}>Revives: {aggregated.revives}</Text>
+                  <Text {...text}>Damage: {Math.round(aggregated.damage)}</Text>
                 </VStack>
 
                 <HStack
@@ -141,9 +168,7 @@ export const Details = ({ data }) => {
                   pl={4}
                 >
                   <FaClock />
-                  <Text>
-                    {getMatchDuration(data?.StartTime, data?.EndTime)}
-                  </Text>
+                  <Text>{getMatchDuration(0, aggregated.duration)}</Text>
                 </HStack>
               </Stack>
             </Dialog.Body>

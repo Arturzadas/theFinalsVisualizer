@@ -96,12 +96,13 @@ export const Stats = ({ data }) => {
       _hover={{ transform: "scale(1.02)" }}
       boxShadow="md"
       p={4}
+      border={"1px solid #989898ff"}
     >
       <Text
         textTransform={"uppercase"}
         fontWeight={"bold"}
         fontStyle={"italic"}
-        fontSize={"2xl"}
+        fontSize={{ base: "30px", md: "40px" }}
         pb={10}
       >
         All time stats
@@ -178,8 +179,8 @@ export const Stats = ({ data }) => {
             <Select.HiddenSelect />
             <Select.Label>Graph types</Select.Label>
             <Select.Control>
-              <Select.Trigger>
-                <Select.ValueText placeholder="Select framework" />
+              <Select.Trigger border={"1px solid #919191ff"}>
+                <Select.ValueText placeholder="Data filter" />
               </Select.Trigger>
               <Select.IndicatorGroup>
                 <Select.Indicator />
