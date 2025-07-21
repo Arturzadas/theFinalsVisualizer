@@ -10,11 +10,18 @@ import { WinCard } from "./WinCard";
 import { PlayerClass } from "./PlayerClass";
 
 export const Card = ({ data, index }) => {
-  const mapInfo = imageSwitcher(data?.Data?.MapVariant);
+  // Extract match data depending on the format
+  const normalizedData = data?.matches?.[0]?.RoundStat
+    ? {
+        ...data.matches[0].RoundStat,
+        CreatedAt: data.earliestCreatedAt,
+      }
+    : data;
+
+  const mapInfo = imageSwitcher(normalizedData?.Data?.MapVariant);
 
   return (
     <HStack
-      onClick={() => console.log(data)}
       w="100%"
       gap={0}
       bgColor="#3C3940"
@@ -22,7 +29,7 @@ export const Card = ({ data, index }) => {
       fontWeight="500"
       fontFamily="Saira"
       transition="ease 0.2s all"
-      _hover={{ transform: "scale(1.02)" }}
+      _hover={{ transform: "scale(1.005)" }}
       boxShadow="md"
       flexDirection={{ base: "column", md: "row" }}
       alignItems="stretch"
@@ -49,7 +56,9 @@ export const Card = ({ data, index }) => {
           <Text fontStyle="italic" fontSize="2xl">
             {mapInfo?.mapName?.toUpperCase()}
           </Text>
-          <Text fontStyle="italic">{formatTimestamp(data?.CreatedAt)}</Text>
+          <Text fontStyle="italic">
+            {formatTimestamp(normalizedData?.CreatedAt)}
+          </Text>
         </VStack>
       </VStack>
 
@@ -64,21 +73,29 @@ export const Card = ({ data, index }) => {
       >
         <HStack w="100%" justifyContent="space-between" flexWrap="wrap">
           <WinCard
-            isWin={data?.Data?.RoundWon}
-            isTournament={data?.Data?.TournamentID !== ""}
+            isWin={normalizedData?.Data?.RoundWon}
+            isTournament={normalizedData?.Data?.TournamentID !== ""}
           />
           <HStack fontSize={{ base: "sm", md: "md" }}>
             <FaClock />
             <Text>
-              {getMatchDuration(data?.Data?.StartTime, data?.Data?.EndTime)}
+              {getMatchDuration(
+                normalizedData?.Data?.StartTime,
+                normalizedData?.Data?.EndTime
+              )}
             </Text>
           </HStack>
         </HStack>
 
         <HStack w="100%" justifyContent="space-between" flexWrap="wrap">
-          <PlayerClass archetype={data?.Data?.CharacterArchetype} />
+          <PlayerClass archetype={normalizedData?.Data?.CharacterArchetype} />
           <Box>
-            <Details data={{ ...data?.Data, createdAt: data?.CreatedAt }} />
+            <Details
+              data={{
+                ...normalizedData?.Data,
+                createdAt: normalizedData?.CreatedAt,
+              }}
+            />
           </Box>
         </HStack>
       </VStack>

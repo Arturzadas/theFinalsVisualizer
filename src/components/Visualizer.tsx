@@ -3,13 +3,14 @@ import { useState } from "react";
 import { Card } from "./Card";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import { Stats } from "./Stats";
+import { TournamentCard } from "./TournamentCard";
 
 export const Visualizer = ({ data, stats }) => {
   const itemsPerPage = 10;
   const totalPages = Math.ceil((data?.length || 0) / itemsPerPage);
   const [currPage, setCurrPage] = useState(1);
 
-  console.log(data);
+  // console.log(data);
 
   const getPageData = (page) => {
     const start = (page - 1) * itemsPerPage;
@@ -62,11 +63,16 @@ export const Visualizer = ({ data, stats }) => {
     >
       <Stats data={stats} />
       {matchData?.length > 0 &&
-        matchData?.map((el, index) => {
-          if (matchData?.TournamentID) return;
+        matchData.map((el, index) => {
+          const isTournament = el?.matches?.length > 0;
+
           return (
-            <HStack key={index} w={"100%"}>
-              <Card index={index} data={el?.RoundStat} />
+            <HStack key={index} w="100%">
+              {isTournament ? (
+                <TournamentCard data={el} index={index} />
+              ) : (
+                <Card data={el?.RoundStat} index={index} />
+              )}
             </HStack>
           );
         })}

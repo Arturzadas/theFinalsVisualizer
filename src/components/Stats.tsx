@@ -80,8 +80,6 @@ export const Stats = ({ data }) => {
 
     setVersion((prev) => prev + 1);
 
-    console.log(formatted, "HERE");
-
     setGraphItems(formatted);
   }, [graphType, totalData]);
 
