@@ -9,6 +9,8 @@ export const Visualizer = ({ data, stats }) => {
   const totalPages = Math.ceil((data?.length || 0) / itemsPerPage);
   const [currPage, setCurrPage] = useState(1);
 
+  console.log(data);
+
   const getPageData = (page) => {
     const start = (page - 1) * itemsPerPage;
     const end = start + itemsPerPage;
@@ -51,10 +53,17 @@ export const Visualizer = ({ data, stats }) => {
   };
 
   return (
-    <VStack gap={5} px={10} py={10} w={"100vw"} maxW={"1920px"}>
+    <VStack
+      gap={5}
+      px={{ base: 3, md: 10 }}
+      py={10}
+      w={"100vw"}
+      maxW={"1920px"}
+    >
       <Stats data={stats} />
       {matchData?.length > 0 &&
         matchData?.map((el, index) => {
+          if (matchData?.TournamentID) return;
           return (
             <HStack key={index} w={"100%"}>
               <Card index={index} data={el?.RoundStat} />

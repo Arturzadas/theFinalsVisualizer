@@ -12,7 +12,11 @@ import {
   StatGroup,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { formatNumberWithCommas } from "../helpers/cardHelper";
+import {
+  formatNumberWithCommas,
+  formatSeconds,
+  formatWinRate,
+} from "../helpers/cardHelper";
 
 export const Stats = ({ data }) => {
   // average damage per match
@@ -43,14 +47,9 @@ export const Stats = ({ data }) => {
     Respawns,
     RoundWinRate,
     RoundsPlayed,
-    RoundsPlayedPerArchetype,
-    RoundsWonPerArchetype,
-    TimePlayedByArchetype,
     TournamentWinRate,
-    TournamentWinRatePerArchetype,
-    TournamentsPlayedPerArchetype,
     TournamentsWon,
-    TournamentsWonPerArchetype,
+    TotalTimePlayed,
     RevivesDone,
   } = totalData;
 
@@ -116,13 +115,14 @@ export const Stats = ({ data }) => {
           // borderRadius={"md"}
           // p={2}
           // py={4}
+          flexDir={{ base: "column", md: "row" }}
           justifyContent={"center"}
           gap={10}
         >
-          <Box pr={6}>
+          <Box px={{ sm: 0, md: 6 }}>
             <RadialKD kills={Kills} deaths={Deaths} />
           </Box>
-          <SimpleGrid columns={3} w="full" gapY={8}>
+          <SimpleGrid columns={{ base: 2, md: 3 }} w="full" gapY={8}>
             <Stat.Root alignItems={"center"}>
               <Stat.Label>Kills</Stat.Label>
               <Stat.ValueText>{formatNumberWithCommas(Kills)}</Stat.ValueText>
@@ -155,14 +155,27 @@ export const Stats = ({ data }) => {
                 {formatNumberWithCommas(Math.round(TournamentsWon))}
               </Stat.ValueText>
             </Stat.Root>
+            <Stat.Root alignItems={"center"}>
+              <Stat.Label>Tournament win rate</Stat.Label>
+              <Stat.ValueText>
+                {formatWinRate(TournamentWinRate.toString())}
+              </Stat.ValueText>
+            </Stat.Root>
+            <Stat.Root alignItems={"center"}>
+              <Stat.Label>Time played</Stat.Label>
+              <Stat.ValueText>
+                {formatSeconds(Math.round(TotalTimePlayed))}
+              </Stat.ValueText>
+            </Stat.Root>
           </SimpleGrid>
         </HStack>
-        <VStack w={"full"} pt={8}>
+        <VStack w={"full"} pt={8} alignItems={"flex-start"}>
           <Select.Root
             collection={types}
             size="sm"
-            width="320px"
+            minW="200px"
             onChange={(e: any) => setGraphType(e?.target?.value)}
+            pb={2}
           >
             <Select.HiddenSelect />
             <Select.Label>Graph types</Select.Label>

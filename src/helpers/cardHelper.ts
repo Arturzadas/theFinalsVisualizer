@@ -38,6 +38,8 @@ export const imageSwitcher = (mapStr) => {
   //sys horizon arena_02
   //nozomi/citadel arena_04
 
+  if (typeof mapStr !== "string") return { map: "", mapName: "" };
+
   let map;
   let mapName;
 
@@ -183,9 +185,20 @@ export function formatSeconds(ms) {
   const h = Math.floor(totalSeconds / 3600);
   const m = Math.floor((totalSeconds % 3600) / 60);
   const s = totalSeconds % 60;
-  return `${h}h${m}m${s}s`;
+  return `${h}h ${m}m ${s}s`;
 }
 
 export function formatNumberWithCommas(number) {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+export function formatWinRate(input) {
+  // Step 1: Remove commas
+  const cleaned = input.replace(/,/g, "");
+
+  // Step 2: Parse to float
+  const num = parseFloat(cleaned);
+
+  // Step 3: Round to two decimal places
+  return parseFloat(num.toFixed(2));
 }

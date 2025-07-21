@@ -27,7 +27,7 @@ const StackedBarChart = ({ data, type }) => {
         padding={0}
         innerPadding={1}
         enableLabel={true}
-        label={({ data }) => data.label}
+        label={({ data }) => data?.label}
         colors={({ id }) => colors[id]}
         borderRadius={4}
         tooltip={({ id, value, color }) => {

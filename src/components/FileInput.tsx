@@ -26,10 +26,75 @@ export const FileInput = ({ setter, setStatsData }) => {
           console.log(el, err, index);
         }
       });
+
       const matches = format.filter((el) => el?.RoundStat);
       const stats = format.find((el) => el?.RoundStatSummary);
 
-      setter(matches);
+      const tournamentMap = new Map();
+      const noTournamentIDMatches: any = [];
+
+      function parseDate(createdAtStr) {
+        if (typeof createdAtStr !== "string") return null;
+        const normalized = createdAtStr.replace(/\.(\d{3})\d*Z$/, ".$1Z");
+        const date = new Date(normalized);
+        return isNaN(date.getTime()) ? null : date;
+      }
+
+      for (const match of matches) {
+        const tournamentID = match?.RoundStat?.Data?.TournamentID;
+        const createdAtRaw = match?.RoundStat?.CreatedAt;
+        const createdAt = parseDate(createdAtRaw);
+
+        if (!createdAt) {
+          // Skip matches with invalid createdAt date
+          continue;
+        }
+
+        if (tournamentID && tournamentID.trim() !== "") {
+          // Group matches with valid tournamentID
+          if (!tournamentMap.has(tournamentID)) {
+            tournamentMap.set(tournamentID, {
+              tournamentID,
+              matches: [],
+              earliestCreatedAt: createdAt,
+            });
+          }
+          const group = tournamentMap.get(tournamentID);
+          group.matches.push(match);
+          if (createdAt < group.earliestCreatedAt) {
+            group.earliestCreatedAt = createdAt;
+          }
+        } else {
+          // Collect matches without a tournamentID separately
+          noTournamentIDMatches.push({ ...match, createdAt });
+        }
+      }
+
+      // Format grouped tournaments
+      const formattedGroupTournaments = Array.from(tournamentMap.values()).map(
+        (group) => ({
+          tournamentID: group.tournamentID,
+          matches: group.matches,
+          earliestCreatedAt: group.earliestCreatedAt.toISOString(),
+        })
+      );
+
+      // Now combine grouped tournaments + matches without tournamentID
+      // For sorting, use earliestCreatedAt for groups, createdAt for individual matches
+      const combined = [
+        ...formattedGroupTournaments,
+        ...noTournamentIDMatches,
+      ].sort((a: any, b: any) => {
+        const dateA = a.earliestCreatedAt
+          ? new Date(a.earliestCreatedAt)
+          : a.createdAt;
+        const dateB = b.earliestCreatedAt
+          ? new Date(b.earliestCreatedAt)
+          : b.createdAt;
+        return dateB - dateA; // most recent first
+      });
+
+      setter(combined);
       setStatsData(stats);
     };
   };

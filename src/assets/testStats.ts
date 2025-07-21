@@ -144,7 +144,7 @@ export const testStats = {
         LastBackfilled: false,
       },
       total: {
-        Kills: 9719,
+        Kills: 10719,
         DamageDone: 3443578.5,
         Deaths: 9763,
         Dbnos: 0,
