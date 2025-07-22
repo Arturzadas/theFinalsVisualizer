@@ -3,6 +3,9 @@
 A fan-made match history site for **The Finals** (because Embark hasn’t made one yet 🤷).  
 It lets you browse your past matches, see stats, and get a better idea of how you're doing over time — way beyond the super simple in-game stats screen.
 
+You can check it out here:  
+👉 [https://the-finals-visualizer.vercel.app](https://the-finals-visualizer.vercel.app)
+
 ## 🔧 How It Works
 
 To use it with your own matches:
