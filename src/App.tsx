@@ -1,8 +1,8 @@
 import { useState } from "react";
 import "./App.css";
-import { Visualizer } from "./components/Visualizer";
-import { FileInput } from "./components/FileInput";
 import { VStack } from "@chakra-ui/react";
+import { Visualizer } from "./components/Visualizer/Visualizer";
+import { FileInput } from "./components/FileInput/FileInput";
 
 function App() {
   const [matchData, setMatchData] = useState([]);

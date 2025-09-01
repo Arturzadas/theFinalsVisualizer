@@ -1,4 +1,5 @@
 import { Box, Center, Text } from "@chakra-ui/react";
+import { radialKDStyles } from "./styles";
 
 export const RadialKD = ({ kills = 0, deaths = 0, type = "KD" }) => {
   const ratio = deaths === 0 ? kills : kills / deaths;
@@ -11,9 +12,11 @@ export const RadialKD = ({ kills = 0, deaths = 0, type = "KD" }) => {
   const circumference = 2 * Math.PI * normalizedRadius;
   const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
+  const { center, container, textBox, ratioText, typeText } = radialKDStyles;
+
   return (
-    <Center p={0}>
-      <Box position="relative" w="100px" h="100px">
+    <Center {...center}>
+      <Box {...container}>
         <svg height="100" width="100">
           <circle
             stroke="#2D3748"
@@ -36,17 +39,9 @@ export const RadialKD = ({ kills = 0, deaths = 0, type = "KD" }) => {
             transform="rotate(-90 50 50)"
           />
         </svg>
-        <Box
-          position="absolute"
-          top="50%"
-          left="50%"
-          transform="translate(-50%, -50%)"
-          textAlign="center"
-        >
-          <Text fontSize="xl" fontWeight="bold">
-            {ratio.toFixed(2)}
-          </Text>
-          <Text fontSize="xs">K/D</Text>
+        <Box {...textBox}>
+          <Text {...ratioText}>{ratio.toFixed(2)}</Text>
+          <Text {...typeText}>K/D</Text>
         </Box>
       </Box>
     </Center>

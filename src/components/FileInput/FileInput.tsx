@@ -1,14 +1,14 @@
 import { useRef, useState, useEffect } from "react";
 import { Box, Button, Text, VStack } from "@chakra-ui/react";
 import { TiUpload } from "react-icons/ti";
-import { testData } from "../assets/testData.ts";
-import { testStats } from "../assets/testStats.ts";
+import { testData } from "../../assets/testData";
+import { testStats } from "../../assets/testStats";
+import { fileInputStyles } from "./styles";
 
 export const FileInput = ({ setter, setStatsData }) => {
   const inputRef: any = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
 
-  // ✅ Only groups and sorts already-parsed objects
   const processStructuredData = (parsedArray) => {
     const matches = parsedArray.filter((el) => el?.RoundStat);
     const stats = parsedArray.find((el) => el?.RoundStatSummary);
@@ -83,7 +83,7 @@ export const FileInput = ({ setter, setStatsData }) => {
       if (!text || typeof text !== "string") return;
 
       const textArr = text.split("\n");
-      const parsed = textArr.map((line, index) => {
+      const parsed = textArr.map((line) => {
         try {
           return JSON.parse(line);
         } catch (err) {
@@ -142,26 +142,17 @@ export const FileInput = ({ setter, setStatsData }) => {
 
   const handleUseExample = (e) => {
     e.stopPropagation();
-    // ✅ testData is already parsed, just group and format
     const { combined } = processStructuredData(testData);
     setter(combined);
     setStatsData(testStats);
   };
 
+  const { container, inner, uploadIcon, uploadText } = fileInputStyles;
+
   return (
     <Box
-      position="fixed"
-      top={0}
-      left={0}
-      width="100vw"
-      height="100vh"
+      {...container}
       border={isDragging ? "4px dashed teal" : "2px dashed gray.300"}
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-      zIndex={1000}
-      cursor="pointer"
-      p={10}
     >
       <input
         type="file"
@@ -169,20 +160,9 @@ export const FileInput = ({ setter, setStatsData }) => {
         style={{ display: "none" }}
         onChange={(e) => handleFiles(e.target.files)}
       />
-      <VStack
-        w="100%"
-        h="100%"
-        border="1px solid gray"
-        alignItems="center"
-        justifyContent="center"
-        borderRadius="2xl"
-        transition="ease 0.2s all"
-        _hover={{ transform: "scale(1.01)" }}
-      >
-        <TiUpload size={100} fill={"gray"} />
-        <Text fontSize="xl" color="gray">
-          Upload File
-        </Text>
+      <VStack {...inner}>
+        <TiUpload {...uploadIcon} />
+        <Text {...uploadText}>Upload File</Text>
         <Text>or</Text>
         <Button onClick={handleUseExample}>Use example</Button>
       </VStack>

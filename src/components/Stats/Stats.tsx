@@ -1,22 +1,14 @@
 import { Box, HStack, SimpleGrid, Text, VStack } from "@chakra-ui/react";
-import { RadialKD } from "./RadialKD";
-import RoundsPlayedPieChart from "./StackedBarChart";
-import StackedBarChart from "./StackedBarChart";
-import {
-  Portal,
-  Select,
-  createListCollection,
-  Stat,
-  StatLabel,
-  StatHelpText,
-  StatGroup,
-} from "@chakra-ui/react";
+import { Portal, Select, createListCollection, Stat } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import {
   formatNumberWithCommas,
   formatSeconds,
   formatWinRate,
-} from "../helpers/cardHelper";
+} from "../../helpers/cardHelper";
+import { RadialKD } from "../RadialKD/RadialKD";
+import StackedBarChart from "../StackedBarChart/StackedBarChart";
+import { statsStyles } from "./styles";
 
 export const Stats = ({ data }) => {
   // average damage per match
@@ -43,10 +35,7 @@ export const Stats = ({ data }) => {
     Kills,
     DamageDone,
     Deaths,
-    Disconnects,
     Respawns,
-    RoundWinRate,
-    RoundsPlayed,
     TournamentWinRate,
     TournamentsWon,
     TotalTimePlayed,
@@ -56,6 +45,16 @@ export const Stats = ({ data }) => {
   const [graphType, setGraphType] = useState("RoundsPlayedPerArchetype");
   const [graphItems, setGraphItems]: any = useState([]);
   const [version, setVersion] = useState(0);
+  const {
+    container,
+    titleText,
+    topHStack,
+    radialBox,
+    simpleGrid,
+    graphVStack,
+    select,
+    trigger,
+  } = statsStyles;
 
   useEffect(() => {
     const graphData = totalData[graphType];
@@ -84,83 +83,55 @@ export const Stats = ({ data }) => {
   }, [graphType, totalData]);
 
   return (
-    <VStack
-      onClick={() => console.log(data)}
-      w="100%"
-      gap={0}
-      bgColor="#3C3940"
-      borderRadius="4px"
-      fontWeight="500"
-      fontFamily="Saira"
-      transition="ease 0.2s all"
-      // _hover={{ transform: "scale(1.02)" }}
-      boxShadow="md"
-      p={4}
-      border={"1px solid #989898ff"}
-    >
-      <Text
-        textTransform={"uppercase"}
-        fontWeight={"bold"}
-        fontStyle={"italic"}
-        fontSize={{ base: "30px", md: "40px" }}
-        pb={10}
-      >
-        All time stats
-      </Text>
-      <VStack w={"full"}>
-        <HStack
-          w={"full"}
-          // border={"1px solid gray"}
-          // borderRadius={"md"}
-          // p={2}
-          // py={4}
-          flexDir={{ base: "column", md: "row" }}
-          justifyContent={"center"}
-          gap={10}
-        >
-          <Box px={{ sm: 0, md: 6 }}>
+    <VStack {...container} onClick={() => console.log(data)}>
+      <Text {...titleText}>All time stats</Text>
+
+      <VStack w="full">
+        <HStack {...topHStack}>
+          <Box {...radialBox}>
             <RadialKD kills={Kills} deaths={Deaths} />
           </Box>
-          <SimpleGrid columns={{ base: 2, md: 3 }} w="full" gapY={8}>
-            <Stat.Root alignItems={"center"}>
+
+          <SimpleGrid {...simpleGrid}>
+            <Stat.Root alignItems="center">
               <Stat.Label>Kills</Stat.Label>
               <Stat.ValueText>{formatNumberWithCommas(Kills)}</Stat.ValueText>
             </Stat.Root>
-            <Stat.Root alignItems={"center"}>
+            <Stat.Root alignItems="center">
               <Stat.Label>Deaths</Stat.Label>
               <Stat.ValueText>{formatNumberWithCommas(Deaths)}</Stat.ValueText>
             </Stat.Root>
-            <Stat.Root alignItems={"center"}>
+            <Stat.Root alignItems="center">
               <Stat.Label>Respawns</Stat.Label>
               <Stat.ValueText>
                 {formatNumberWithCommas(Respawns)}
               </Stat.ValueText>
             </Stat.Root>
-            <Stat.Root alignItems={"center"}>
+            <Stat.Root alignItems="center">
               <Stat.Label>Revives</Stat.Label>
               <Stat.ValueText>
                 {formatNumberWithCommas(RevivesDone)}
               </Stat.ValueText>
             </Stat.Root>
-            <Stat.Root alignItems={"center"}>
+            <Stat.Root alignItems="center">
               <Stat.Label>Damage</Stat.Label>
               <Stat.ValueText>
                 {formatNumberWithCommas(Math.round(DamageDone))}
               </Stat.ValueText>
             </Stat.Root>
-            <Stat.Root alignItems={"center"}>
+            <Stat.Root alignItems="center">
               <Stat.Label>Tournaments Won</Stat.Label>
               <Stat.ValueText>
                 {formatNumberWithCommas(Math.round(TournamentsWon))}
               </Stat.ValueText>
             </Stat.Root>
-            <Stat.Root alignItems={"center"}>
+            <Stat.Root alignItems="center">
               <Stat.Label>Tournament win rate</Stat.Label>
               <Stat.ValueText>
                 {formatWinRate(TournamentWinRate.toString())}
               </Stat.ValueText>
             </Stat.Root>
-            <Stat.Root alignItems={"center"}>
+            <Stat.Root alignItems="center">
               <Stat.Label>Time played</Stat.Label>
               <Stat.ValueText>
                 {formatSeconds(Math.round(TotalTimePlayed))}
@@ -168,24 +139,24 @@ export const Stats = ({ data }) => {
             </Stat.Root>
           </SimpleGrid>
         </HStack>
-        <VStack w={"full"} pt={8} alignItems={"flex-start"}>
+
+        <VStack {...graphVStack}>
           <Select.Root
             collection={types}
-            size="sm"
-            minW="200px"
             onChange={(e: any) => setGraphType(e?.target?.value)}
-            pb={2}
+            {...select}
           >
             <Select.HiddenSelect />
             <Select.Label>Graph types</Select.Label>
             <Select.Control>
-              <Select.Trigger border={"1px solid #919191ff"}>
+              <Select.Trigger {...trigger}>
                 <Select.ValueText placeholder="Data filter" />
               </Select.Trigger>
               <Select.IndicatorGroup>
                 <Select.Indicator />
               </Select.IndicatorGroup>
             </Select.Control>
+
             <Portal>
               <Select.Positioner>
                 <Select.Content>
@@ -199,6 +170,7 @@ export const Stats = ({ data }) => {
               </Select.Positioner>
             </Portal>
           </Select.Root>
+
           <StackedBarChart key={version} data={graphItems} type={graphType} />
         </VStack>
       </VStack>

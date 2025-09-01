@@ -193,12 +193,9 @@ export function formatNumberWithCommas(number) {
 }
 
 export function formatWinRate(input) {
-  // Step 1: Remove commas
   const cleaned = input.replace(/,/g, "");
 
-  // Step 2: Parse to float
   const num = parseFloat(cleaned);
 
-  // Step 3: Round to two decimal places
   return parseFloat(num.toFixed(2));
 }
