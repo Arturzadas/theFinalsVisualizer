@@ -1,7 +1,7 @@
 import { Box, Center, Text } from "@chakra-ui/react";
 import { radialKDStyles } from "./styles";
 
-export const RadialKD = ({ kills = 0, deaths = 0, type = "KD" }) => {
+export const RadialKD = ({ kills = 0, deaths = 0 }) => {
   const ratio = deaths === 0 ? kills : kills / deaths;
   const clampedRatio = Math.min(ratio, 2);
   const percentage = (clampedRatio / 2) * 100;

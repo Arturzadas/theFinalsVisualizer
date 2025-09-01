@@ -97,7 +97,7 @@ export const Visualizer = ({ data, stats }) => {
           return (
             <HStack key={index} w="100%">
               {isTournament ? (
-                <TournamentCard data={el} index={index} />
+                <TournamentCard data={el} />
               ) : (
                 <Card data={el?.RoundStat} />
               )}

@@ -1,20 +1,11 @@
-import {
-  Box,
-  Button,
-  HStack,
-  Image,
-  Text,
-  VStack,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { HStack, Image, Text, VStack } from "@chakra-ui/react";
 import { Card } from "../Card/Card";
 import { WinCard } from "../WinCard/WinCard";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { teamSelect } from "../../helpers/cardHelper";
 import { TournamentDetails } from "../TournamentDetails/TournamentDetails";
 import { tournamentCardStyles } from "./styles";
 
-export const TournamentCard = ({ data, index }) => {
+export const TournamentCard = ({ data }) => {
   const matches = data?.matches || [];
   const tournamentInfo = matches?.[0]?.RoundStat?.Data;
   const createdAt = data?.earliestCreatedAt;
@@ -63,7 +54,7 @@ export const TournamentCard = ({ data, index }) => {
       {/* Round Cards Preview (up to 3) */}
       <VStack {...roundsVStack}>
         {matches.map((match, i) => (
-          <Card key={i} index={i} data={match.RoundStat} />
+          <Card key={i} data={match.RoundStat} />
         ))}
       </VStack>
     </VStack>
