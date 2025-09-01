@@ -1,7 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import { Box, Button, Text, VStack } from "@chakra-ui/react";
 import { TiUpload } from "react-icons/ti";
-import { testData } from "../../assets/testData";
 import { testStats } from "../../assets/testStats";
 import { fileInputStyles } from "./styles";
 
@@ -140,11 +139,17 @@ export const FileInput = ({ setter, setStatsData }) => {
     };
   }, []);
 
-  const handleUseExample = (e) => {
+  const handleUseExample = async (e) => {
     e.stopPropagation();
-    const { combined } = processStructuredData(testData);
-    setter(combined);
-    setStatsData(testStats);
+    try {
+      const testData: any = (await import("../../assets/testData"))?.default;
+
+      const { combined } = processStructuredData(testData);
+      setter(combined);
+      setStatsData(testStats); // small, stays bundled
+    } catch (err) {
+      console.error("Failed to load example data:", err);
+    }
   };
 
   const { container, inner, uploadIcon, uploadText } = fileInputStyles;

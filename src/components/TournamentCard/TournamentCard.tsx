@@ -1,8 +1,11 @@
+import React, { Suspense } from "react";
 import { HStack, Image, Text, VStack } from "@chakra-ui/react";
 import { Card } from "../Card/Card";
 import { WinCard } from "../WinCard/WinCard";
 import { teamSelect } from "../../helpers/cardHelper";
-import { TournamentDetails } from "../TournamentDetails/TournamentDetails";
+const TournamentDetails = React.lazy(
+  () => import("../TournamentDetails/TournamentDetails")
+);
 import { tournamentCardStyles } from "./styles";
 
 export const TournamentCard = ({ data }) => {
@@ -37,7 +40,9 @@ export const TournamentCard = ({ data }) => {
           <Image src={teamIcon} alt={squadName} {...squadImage} />
           <Text {...squadText}>{squadName} - Tournament Summary</Text>
         </HStack>
-        <TournamentDetails data={data} />
+        <Suspense fallback={<></>}>
+          <TournamentDetails data={data} />
+        </Suspense>
       </HStack>
 
       {/* Metadata */}

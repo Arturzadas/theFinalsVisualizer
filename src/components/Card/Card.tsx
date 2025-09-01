@@ -1,3 +1,4 @@
+import React, { Suspense } from "react";
 import { Box, HStack, Text, VStack } from "@chakra-ui/react";
 import {
   formatTimestamp,
@@ -7,7 +8,7 @@ import {
 import { FaClock } from "react-icons/fa";
 import { WinCard } from "../WinCard/WinCard";
 import { PlayerClass } from "../PlayerClass/PlayerClass";
-import { Details } from "../Details/Details";
+const Details = React.lazy(() => import("../Details/Details"));
 import { cardStyles } from "./styles";
 
 export const Card = ({ data }) => {
@@ -68,12 +69,14 @@ export const Card = ({ data }) => {
         <HStack {...bottomRow}>
           <PlayerClass archetype={normalizedData?.Data?.CharacterArchetype} />
           <Box>
-            <Details
-              data={{
-                ...normalizedData?.Data,
-                createdAt: normalizedData?.CreatedAt,
-              }}
-            />
+            <Suspense fallback={<div></div>}>
+              <Details
+                data={{
+                  ...normalizedData?.Data,
+                  createdAt: normalizedData?.CreatedAt,
+                }}
+              />
+            </Suspense>
           </Box>
         </HStack>
       </VStack>

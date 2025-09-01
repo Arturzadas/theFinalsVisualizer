@@ -9,4 +9,19 @@ export default defineConfig({
       usePolling: true,
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          nivo: ["@nivo/bar"],
+          charts: ["src/components/StackedBarChart/StackedBarChart"],
+          stats: [
+            "src/components/Stats/Stats",
+            "src/components/Details/Details",
+          ],
+          tournament: ["src/components/TournamentDetails/TournamentDetails"],
+        },
+      },
+    },
+  },
 });

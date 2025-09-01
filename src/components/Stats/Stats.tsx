@@ -1,3 +1,4 @@
+import React, { Suspense } from "react";
 import { Box, HStack, SimpleGrid, Text, VStack } from "@chakra-ui/react";
 import { Portal, Select, createListCollection, Stat } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
@@ -7,10 +8,13 @@ import {
   formatWinRate,
 } from "../../helpers/cardHelper";
 import { RadialKD } from "../RadialKD/RadialKD";
-import StackedBarChart from "../StackedBarChart/StackedBarChart";
+const StackedBarChart = React.lazy(
+  () => import("../StackedBarChart/StackedBarChart")
+);
+
 import { statsStyles } from "./styles";
 
-export const Stats = ({ data }) => {
+const Stats = ({ data }) => {
   // average damage per match
   // average kills and deaths per match
   // average revives per match
@@ -170,10 +174,13 @@ export const Stats = ({ data }) => {
               </Select.Positioner>
             </Portal>
           </Select.Root>
-
-          <StackedBarChart key={version} data={graphItems} type={graphType} />
+          <Suspense fallback={<></>}>
+            <StackedBarChart key={version} data={graphItems} type={graphType} />
+          </Suspense>
         </VStack>
       </VStack>
     </VStack>
   );
 };
+
+export default Stats;

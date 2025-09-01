@@ -22,7 +22,7 @@ import { RadialKD } from "../RadialKD/RadialKD";
 import { WinCard } from "../WinCard/WinCard";
 import { detailsStyles } from "./styles";
 
-export const Details = ({ data }) => {
+const Details = ({ data }) => {
   const mapDetails = imageSwitcher(data?.MapVariant);
 
   const {
@@ -119,3 +119,5 @@ export const Details = ({ data }) => {
     </Dialog.Root>
   );
 };
+
+export default Details;

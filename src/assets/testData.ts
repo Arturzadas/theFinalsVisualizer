@@ -1,5 +1,5 @@
 //@ts-ignore
-export const testData: any = [
+const testData: any = [
   {
     RoundStat: {
       CreatedAt: "2025-07-15T11:57:37.745656Z",
@@ -61668,3 +61668,5 @@ export const testData: any = [
     },
   },
 ];
+
+export default testData;

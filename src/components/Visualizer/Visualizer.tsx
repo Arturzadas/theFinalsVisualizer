@@ -1,7 +1,8 @@
+import React, { Suspense } from "react";
 import { Flex, Heading, HStack, VStack, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
-import { Stats } from "../Stats/Stats";
+const Stats = React.lazy(() => import("../Stats/Stats"));
 import { TournamentCard } from "../TournamentCard/TournamentCard";
 import { Card } from "../Card/Card";
 import { visualizerStyles } from "./styles";
@@ -87,7 +88,9 @@ export const Visualizer = ({ data, stats }) => {
 
   return (
     <VStack {...container}>
-      <Stats data={stats} />
+      <Suspense fallback={<></>}>
+        <Stats data={stats} />
+      </Suspense>
 
       <Heading {...heading}>MATCH HISTORY</Heading>
 

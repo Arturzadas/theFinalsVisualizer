@@ -22,7 +22,7 @@ import {
 } from "../../helpers/cardHelper";
 import { tournamentDetailsStyles } from "./styles";
 
-export const TournamentDetails = ({ data }) => {
+const TournamentDetails = ({ data }) => {
   const matches = data?.matches || [];
   const squadName = matches?.[0]?.RoundStat?.Data?.SquadName;
   const createdAt = data?.earliestCreatedAt;
@@ -139,3 +139,5 @@ export const TournamentDetails = ({ data }) => {
     </Dialog.Root>
   );
 };
+
+export default TournamentDetails;
